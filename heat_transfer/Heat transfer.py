@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import sys
 
 # intput data
 A = 0.1 #m
@@ -14,7 +15,7 @@ dx = A/nx
 dy = A/ny
 
 #time grid
-t_sim = 5 #s        TIME 
+t_sim = 20 #s        TIME 
 dt =  1e-3 #s         Time step
 nt  = int(t_sim/dt) # Number of time step
 
@@ -50,12 +51,12 @@ elif material == 'stainless steel':
     cw = 450 #J/kgK
     K = 58 #W/mK
 else:
-    return print('Non known material. Sorry :(')
+    print('Non known material. Sorry :(')
+    sys.exit()
 
 #campure few plate states
-fig, axes = plt.subplots(4, 1, figsize=(10,15))
-axes[0].set_title('Heat transfer', fontsize=14)
-state = [0, int(nt/8), int(nt/4), nt-1]
+fig, axes = plt.subplots(5, 1, figsize=(8, 8))
+state = [0, int(nt/4), int(nt/2), int(3*nt/4), nt-1]
 no_plot = 0
 
 for n in range(nt):
@@ -69,11 +70,15 @@ for n in range(nt):
             T[i,j] = T_pref + const / (dx**2) * dT1_num + const / (dy**2) *dT2_num
 
     if n in state:
-        sns.heatmap(T, cmap=sns.color_palette("RdBu_r", 200), vmin=0, vmax=100, ax=axes[no_plot], linewidths=.1, linecolor='black')
+        sns.heatmap(T, cmap=sns.color_palette("RdBu_r", 500), vmin=0, vmax=100, ax=axes[no_plot], linewidths=.1, linecolor='black')
+        axes[no_plot].set_title(str(int(state[no_plot]*dt)) + '[s]')
+        axes[no_plot].xaxis.set_ticks_position('none')
+        axes[no_plot].yaxis.set_ticks_position('none')
         axes[no_plot].xaxis.set_ticklabels([])
         axes[no_plot].yaxis.set_ticklabels([])
         no_plot += 1
                 
 axes[no_plot-1].set_xlabel('X')
 axes[no_plot-1].set_ylabel('Y')
-
+plt.tight_layout()
+plt.show()
