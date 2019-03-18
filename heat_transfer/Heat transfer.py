@@ -14,7 +14,7 @@ dx = A / nx
 dy = A / ny
 
 # time grid
-t_sim = 10  # s        TIME
+t_sim = 2  # s        TIME
 dt = 1e-3  # s         Time step
 nt = int(t_sim / dt)  # Number of time step
 
@@ -31,8 +31,8 @@ heater_size = (down_shift - up_shift) * dx
 T[up_shift:down_shift, up_shift:down_shift] = 100
 
 # material properties
-#pick material to be tested
-material = 'stainless steel'
+# pick material to be tested
+material = 'alumina'
 if material == 'alumina':
     # alumina
     p = 2700  # kg/m^3
@@ -80,3 +80,6 @@ axes[no_plot - 1].set_xlabel('X')
 axes[no_plot - 1].set_ylabel('Y')
 plt.tight_layout()
 plt.show()
+
+print('\n'.join([' '.join(['{:.2f}'.format(item) for item in row])
+                 for row in T]))
