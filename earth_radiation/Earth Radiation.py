@@ -1,28 +1,22 @@
-# Pow - sphere surface = 4 * pi * R^2
-# Albedo - ratio reflected energy to incoming enery
-#
-# Solar switching consant for both points, two cases increasering as and deacresing albido as:
-# as 0.19 -> 0.65
-#
-# Ts < (Tc = (-10C) critical temp)
-#
-# #1 Calculation for no atmosferic,
-# #2 amosfere and compare
-# #3 solar constant scenarios, glaciations mechanism
-#
-# plot solar range vs mean temp
-
 import math
 import numpy as np
 from scipy.optimize import fsolve
 import matplotlib.pyplot as plt
 import seaborn
 
-albedo_mean = 0.3
-solar_const = 1366  # W/m2
-sigma = 5.67 * 1e-8  # W/m2K4
-R = 6.371 * 1e3  # m
-Tc = 263
+##################################
+# First part: calculating mean temperature on the Surface without atmosphere.
+
+# Constants necessary for simulation
+albedo_mean = 0.3  # Mean Albedo
+solar_const = 1366  # Solar constant
+sigma = 5.67 * 1e-8  # Stefan_Boltzmann constant as sigma
+
+T_without_a = (solar_const * (1.0 - albedo_mean) / (4 * sigma))**(.25)
+print('Mean temperature of the suface witout atmosphere effect: %.3f K.' % T_without_a)
+
+##################################
+# Second part: calculating mean temperature on the Surface with atmoshpere
 
 # short wave radiation
 t_a_short = 0.53
@@ -33,14 +27,11 @@ albedo_a_short = 0.3
 t_a_long = 0.06
 albedo_a_long = 0.31
 
-# just c XO
-c = 2.7  # Wm-2K-1
+# constant c
+c = 2.7
 
-# without atmosphere
-T_without_a = (solar_const * (1 - albedo_mean) / (4 * sigma))**(.25)
-print('Mean temperature on the suface witout atmosphere effect: %.3f' % T_without_a)
-
-# model for Ta and Ts with atmosphere
+# Solving the non-linear equation of energy Balance Equation (WITH Atmosphere).
+#  Model for mean T of atmosphere and mean T of surface.
 
 
 def model(t):
@@ -58,20 +49,34 @@ def model(t):
     return F
 
 
-T2 = fsolve(model, [0, 0])[1]
-print('Means temperature on the sufrace with atmosphere effect: %.3f' % T2)
-print('Difference: %.3f' % abs(T2 - T_without_a))
+T_a = fsolve(model, [0, 0])[1]
+print('Mean temperature of the sufrace with atmosphere effect: %.3f K.' % T_a)
+print('Absolute difference between mean T with and without atmoshpere: %.3f K.' % abs(T_a - T_without_a))
 
-solar_range = solar_const * np.arange(0.6, 1.3, 0.01)
-albedo_range = np.arange(0.19, 0.65, 0.01)
+solar_ratio = np.arange(0.6, 1.3, 0.01)
+solar_range = solar_const * solar_ratio
 
-# normal enviroment
 T_with_a = []
 for solar_const in solar_range:
     T_with_a.append(fsolve(model, [0, 0])[1])
 
+seaborn.scatterplot(T_with_a, solar_ratio)
+plt.xlabel('Mean Temperature [K]')
+plt.ylabel('Solar constant ratio')
+plt.grid()
+plt.show()
+
+################################################
+# Glaciation mechanism
+
+Tc = 263  # Critical Temperature
+
 T_glac_inc = []
 T_glac_dec = []
+
+solar_ratio = np.arange(0.5, 1.5, 0.01)
+solar_range = solar_const * solar_ratio
+albedo_range = np.arange(0.19, 0.65, 0.1)
 
 # increasing albedo
 for solar_const in solar_range:
@@ -91,25 +96,10 @@ for solar_const in solar_range:
 
     T_glac_dec.append(temp)
 
-"""
-for solar_const in solar_range:
-    temp = fsolve(model, [0, 0])[1]
-    if temp < Tc:
-        albedo_s = 0.65
-
-    T_glac_inc.append(temp)
-
-for solar_const in solar_range:
-    temp = fsolve(model, [0, 0])[1]
-    if temp < Tc:
-        albedo_s = 0.19
-
-    T_glac_dec.append(temp)
-"""
-fig, axes = plt.subplots(1, 2)
-seaborn.scatterplot(solar_range, T_with_a, ax=axes[0])
-seaborn.scatterplot(solar_range, T_glac_inc, ax=axes[1])
-
-#solar_fraction = int()
-seaborn.scatterplot(solar_range, T_glac_dec, ax=axes[1])
+seaborn.scatterplot(solar_ratio, T_glac_inc, label='increasing albedo')
+seaborn.scatterplot(solar_ratio, T_glac_dec, label='deacresing albedo')
+plt.ylabel('Mean Temperature [K]')
+plt.xlabel('Solar constant ratio')
+plt.grid()
+plt.legend()
 plt.show()
