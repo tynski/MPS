@@ -1,5 +1,5 @@
 import numpy as np
-from extract import extract_values
+from utilities import *
 import matplotlib.pyplot as plt
 
 """
