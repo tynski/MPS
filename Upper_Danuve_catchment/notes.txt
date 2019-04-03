@@ -1,0 +1,34 @@
+"""
+natural tracer - thritium
+
+we will observe natural level and reduction of tracer, cycle in the nature 
+
+during '60 thritium huge increas ivolved by bomb tests and then decresing
+
+methodology:
+convolotion integrel
+1 constant one
+2 ?
+3 radioactive  decay
+
+Piston-flow model
+- advection phenomena (probobly not working correct)
+
+Exponential model
+- 
+
+just definition we have to find t
+t concetration / density of concetration 
+
+recomend
+numerical intergration
+
+odpady (input)
+- time (months)
+- tritum concetration (origination from percitipation)
+
+dunaj (output)
+- time (months)
+- tritium concetriation
+
+"""
