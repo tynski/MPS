@@ -1,4 +1,4 @@
-from scipy import signal
+import numpy as np
 import math
 
 def extract_values(data):
@@ -14,24 +14,32 @@ def extract_values(data):
         records.append(record)
     return records
 
-def integral(C_in, t, integration_par, lamb):
-    partial = None
-    sum = 0
-    dt = 0
-    for i in range(t):
-        g = distribution_function(t, integration_par)
-        partial = C_in * g * math.exp(-lamb)
-        sum += partial
+def driac(x):
+    if x <= 1e-4:
+        return 1
+    return 0
+
+def integral(C_in, t, tt):
+    partial = 0
+    dt = 1
+    decay = math.log(2) / (12.32 * 12) #labmda
+
+    for ti in range(t):
+        g = distribution_function(t, ti, tt)
+        partial += C_in[ti] * g * math.exp(-decay*(t - ti))
     
-    C = sum * dt
+    C = partial * dt
     return(C)
 
-def distribution_function(t, integration_par):
-    #Piston-flow model
-    tt = mean_residence_time(integration_par, C)
-    signal.unit_impulse(t, ((t - integration_par) - tt))
-    return g
+def distribution_function(t, ti, tt):
+    model = 'Piston'
 
-def mean_residence_time(integration_par, C):
-    tt = None
-    return tt
+    #Piston-flow model
+    if(model == 'Piston'):
+        g = driac((t - ti) - tt) #now impuls is 1, should it be inf?
+
+    #Exponential model
+    if(model == 'Exp'):
+        g = np.exp(-(t-ti)/tt) / tt
+
+    return g

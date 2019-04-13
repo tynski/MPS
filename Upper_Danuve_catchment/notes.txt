@@ -1,8 +1,21 @@
 """
+AIM
+compute mean residence time of water -> tt
+
+METHOD
+my intuition is to check different tt, compute MSE and pick the tt associated with
+the lowest error.
+
+Calculation of the mean residence time of the water in upper Danube catchment using 
+trial-error method
+
+
+
 natural tracer - thritium
 
 we will observe natural level and reduction of tracer, cycle in the nature 
 
+trivia
 during '60 thritium huge increas ivolved by bomb tests and then decresing
 
 methodology:
@@ -23,7 +36,7 @@ t concetration / density of concetration
 recomend
 numerical intergration
 
-odpady (input)
+odady (input)
 - time (months)
 - tritum concetration (origination from percitipation)
 
@@ -31,4 +44,5 @@ dunaj (output)
 - time (months)
 - tritium concetriation
 
+tt is set and checked if it is correct
 """
