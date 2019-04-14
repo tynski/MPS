@@ -19,27 +19,33 @@ def driac(x):
         return 1
     return 0
 
-def integral(C_in, t, tt):
+def disper(t, ti, tt):
+    pe = 5.2
+    sqrt = np.sqrt((4 * math.pi * pe * (t - ti)) / tt)
+    exp = np.exp( (-1) * np.square((1.0 - (t - ti)) / tt) / (4 * pe * (t - ti) / tt))
+    disp = np.reciprocal(sqrt) * np.reciprocal(t - ti) * exp
+    return disp
+
+def integral(C_in, t, tt, model):
     partial = 0
     dt = 1
     decay = math.log(2) / (12.32 * 12) #labmda
 
     for ti in range(t):
-        g = distribution_function(t, ti, tt)
+        g = tranist_func(t, ti, tt, model)
         partial += C_in[ti] * g * math.exp(-decay*(t - ti))
     
     C = partial * dt
     return(C)
 
-def distribution_function(t, ti, tt):
-    model = 'Piston'
-
+def tranist_func(t, ti, tt, model):
     #Piston-flow model
-    if(model == 'Piston'):
+    if(model == 1):
         g = driac((t - ti) - tt) #now impuls is 1, should it be inf?
-
     #Exponential model
-    if(model == 'Exp'):
+    elif(model == 2):
         g = np.exp(-(t-ti)/tt) / tt
+    elif(model == 3):
+        g = disper(t, ti, tt)
 
     return g
